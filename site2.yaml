@@ -1,6 +1,7 @@
 ---
-- name: Check log files older than 10 days
+- 
   hosts: all
+   become: true
   gather_facts: no
   tasks:
     - name: Find log files
