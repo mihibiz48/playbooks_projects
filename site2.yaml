@@ -1,0 +1,17 @@
+---
+- name: Check log files older than 10 days
+  hosts: localhost
+  tasks:
+    - name: Find log files
+      find:
+        paths: /var/log
+        recurse: yes
+        patterns: "*.log"
+      register: log_files
+
+    - name: Check modification timestamps
+      assert:
+        that:
+          - item.mtime.days_ago > 10
+        fail_msg: "Log file {{ item.path }} is not older than 10 days."
+      loop: "{{ log_files.files }}"
