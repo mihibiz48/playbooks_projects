@@ -1,18 +1,19 @@
---- 
-- hosts: all
+---
+- name: Clear old log files
+  hosts: all
   become: true
   gather_facts: no
+
   tasks:
-    - name: Find log files
+    - name: Find log files older than 10 days
       find:
         paths: /var/log
-        recurse: yes
         patterns: "*.log"
+        age: "10d"
       register: log_files
 
-    - name: Check modification timestamps
-      assert:
-        that:
-          - item.mtime.days_ago > 10
-        fail_msg: "Log file {{ item.path }} is not older than 10 days."
-      loop: "{{ log_files.files }}"
+    - name: Remove old log files
+      file:
+        path: "{{ item.path }}"
+        state: absent
+      with_items: "{{ log_files.files }}"
