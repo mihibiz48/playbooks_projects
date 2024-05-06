@@ -1,6 +1,6 @@
 ---
 - name: Check log files older than 10 days
-  hosts: localhost
+  hosts: all
   tasks:
     - name: Find log files
       find:
